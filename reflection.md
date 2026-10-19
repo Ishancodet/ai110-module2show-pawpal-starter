@@ -4,8 +4,13 @@
 
 **a. Initial design**
 
-- Briefly describe your initial UML design.
-- What classes did you include, and what responsibilities did you assign to each?
+**Three core actions a user should be able to perform:**
+
+1. **Add a pet.** The owner enters their own name and then adds a pet by giving its name and species. This lets one owner manage more than one pet, each with its own care routine.
+
+2. **Schedule a care task for a pet.** The owner picks a pet and adds a task such as a walk, feeding, medication, or vet appointment. Each task has a description, a time (HH:MM), a duration, a priority, and a frequency (once, daily, or weekly).
+
+3. **View today's schedule.** The owner sees every task across all of their pets, sorted by time. Tasks that overlap at the same time are flagged with a warning, and completed tasks can be marked done so a new one is created for recurring tasks.
 
 **b. Design changes**
 
