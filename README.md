@@ -66,17 +66,29 @@ Today's Schedule for Ishan (Tuesday, October 20, 2026)
 
 ```bash
 # Run the full test suite:
-pytest
+python -m pytest
 
 # Run with coverage:
-pytest --cov
+python -m pytest --cov
 ```
 
 Sample test output:
 
 ```
-# Paste your pytest output here
+======================== test session starts ========================
+platform darwin -- Python 3.14.2, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/ishan/Desktop/ai110-module2show-pawpal-starter
+plugins: anyio-4.15.1
+collected 19 items
+
+tests/test_pawpal.py ...................                        [100%]
+
+======================== 19 passed in 0.02s ========================
 ```
+
+The suite checks that `sort_by_time` returns tasks in chronological order even when they are added out of order, and that completing a daily task schedules a copy for the next day while a weekly task schedules one seven days later. It verifies that `detect_conflicts` flags tasks sharing a start time, both for a single pet and across different pets. It also covers edge cases: a pet with no tasks, an owner with no pets, and filters that match nothing.
+
+Confidence Level: 4/5 stars
 
 ## 📐 Smarter Scheduling
 

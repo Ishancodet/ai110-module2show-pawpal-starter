@@ -58,13 +58,11 @@ Claude Code also offered three ways to simplify detect_conflicts. I rejected the
 
 **a. What you tested**
 
-- What behaviors did you test?
-- Why were these tests important?
+I tested sorting (tasks added out of order come back in chronological order), recurrence (completing a daily task creates a new task for the next day, and a weekly one 7 days later), conflict detection (two tasks at the same time are flagged, including across different pets), and edge cases such as a pet with no tasks, an owner with no pets, and filters that match nothing. These matter because the app's value depends on the schedule being ordered correctly, recurring tasks not disappearing, and the owner being warned about clashes.
 
 **b. Confidence**
 
-- How confident are you that your scheduler works correctly?
-- What edge cases would you test next if you had more time?
+I am about 4 out of 5 confident. All 19 tests pass, and they cover the main behaviors and several edge cases. I am not at 5 because conflict detection only compares identical start times, so overlapping durations are not caught, and I have not tested invalid time strings. If I had more time I would test overlapping durations (a 30-minute walk at 08:00 and a feeding at 08:15), malformed times like "8:00" or "25:99", and marking the same task complete twice.
 
 ---
 
