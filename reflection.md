@@ -43,13 +43,13 @@ Yes. I added a `pet_name` field to `Task` because `Owner.get_all_tasks()` merges
 
 **a. How you used AI**
 
-- How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
-- What kinds of prompts or questions were most helpful?
+I used Claude Code as my main AI assistant across the project. In Phase 1 it generated the Mermaid class diagram from the attributes and methods I had brainstormed, then turned that diagram into a Python skeleton using dataclasses. In Phase 2 it implemented the core logic for Task, Pet, Owner, and Scheduler, wrote the main.py demo script, and drafted my first two pytest tests. The prompts that worked best were specific and narrow, for example "add a pet_name field to Task and change filter_tasks to filter by pet name, and change nothing else." Broad prompts produced more code than I wanted, so I kept each request small and checked the result before moving on. I also used a fresh chat session for each phase, which kept each conversation focused and made it easier to see what changed in each step.
 
 **b. Judgment and verification**
 
-- Describe one moment where you did not accept an AI suggestion as-is.
-- How did you evaluate or verify what the AI suggested?
+I did not accept the first skeleton as it was. After reviewing it, I noticed that Task had no way to record which pet it belonged to, so once Owner.get_all_tasks() merged every pet's tasks into one list, the Scheduler could not tell whose task was whose. I also saw that filter_tasks filtered by species, while the assignment asks for filtering by pet or completion status. I added a pet_name field to Task and changed the filter to use pet name, then updated the UML diagram and my design notes to match.
+
+In Phase 2, Claude Code also left out recurring tasks to keep things simple, and it limited detect_conflicts to overlapping tasks for the same pet, which is narrower than my design (same time, same or different pets). I decided to leave both for Phase 4 instead of accepting them as final. To verify the AI's work, I did not rely on its summaries. I ran python main.py myself and compared the schedule to what I expected, and I ran python -m pytest to confirm the tests passed.
 
 ---
 
