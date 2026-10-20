@@ -44,15 +44,23 @@ pip install -r requirements.txt
 
 ## 🖥️ Sample Output
 
-Paste a sample of your app's CLI or Streamlit output here so a reader can see what a generated plan looks like:
+Output from running `python main.py`:
 
 ```
-# e.g.:
-# Daily plan for Biscuit (Golden Retriever):
-#   08:00 — Morning walk (30 min) [priority: high]
-#   09:00 — Feeding (10 min) [priority: high]
-#   ...
+Today's Schedule for Ishan (Tuesday, October 20, 2026)
+============================================================
+[ ] 07:30  Feeding                Mochi     10 min  priority: high
+[ ] 08:00  Morning walk           Biscuit   30 min  priority: high
+[ ] 09:00  Feeding                Biscuit   10 min  priority: high
+[ ] 17:30  Grooming               Biscuit   20 min  priority: low
+[ ] 19:00  Play with feather toy  Mochi     15 min  priority: medium
+============================================================
+5 tasks scheduled.
 ```
+
+### Implementation Summary
+
+`Task` is a dataclass holding one care activity: description, pet name, time, duration, priority, frequency, due date, and a completed flag it can set with `mark_complete()`. `Pet` stores a name, species, and its own list of tasks. `Owner` holds a name and a list of pets, and `get_all_tasks()` merges every pet's tasks into one list. `Scheduler` takes an owner and reads tasks through `get_all_tasks()`; it sorts them by time, filters by pet name, priority, or completion status, detects overlapping time slots for the same pet, and marks tasks complete. Together they form a simple chain: tasks belong to pets, pets belong to an owner, and the scheduler turns the owner's combined task list into a daily plan.
 
 ## 🧪 Testing PawPal+
 
