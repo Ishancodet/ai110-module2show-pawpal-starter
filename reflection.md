@@ -12,6 +12,13 @@
 
 3. **View today's schedule.** The owner sees every task across all of their pets, sorted by time. Tasks that overlap at the same time are flagged with a warning, and completed tasks can be marked done so a new one is created for recurring tasks.
 
+**Classes and responsibilities:**
+
+- **Task** represents one care activity. It stores a description, time (HH:MM), duration, priority, frequency, due date, and completion status, and can mark itself complete.
+- **Pet** stores a pet's name and species along with its list of tasks. It can add a task and return its tasks.
+- **Owner** stores the owner's name and a list of pets. It can add a pet and return every pet's tasks together through `get_all_tasks()`.
+- **Scheduler** is the brain. It holds a reference to the owner and reads all tasks through `Owner.get_all_tasks()`. It sorts tasks by time, filters by pet or completion status, detects conflicts, and marks tasks complete (creating the next occurrence for recurring tasks).
+
 **b. Design changes**
 
 - Did your design change during implementation?
