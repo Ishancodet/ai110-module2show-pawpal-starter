@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, timedelta
 
 
 def _to_minutes(time_str: str) -> int:
@@ -74,34 +74,47 @@ class Scheduler:
         self,
         tasks: list[Task] | None = None,
         pet_name: str | None = None,
-        priority: str | None = None,
         completed: bool | None = None,
     ) -> list[Task]:
-        """Return tasks matching every filter that is not None."""
+        """Return tasks matching pet_name and/or completed status; both are optional."""
         result = []
         for task in self._tasks(tasks):
             if pet_name is not None and task.pet_name != pet_name:
-                continue
-            if priority is not None and task.priority != priority:
                 continue
             if completed is not None and task.completed != completed:
                 continue
             result.append(task)
         return result
 
-    def detect_conflicts(self, tasks: list[Task] | None = None) -> list[tuple]:
-        """Return (task_a, task_b) pairs for the same pet whose time slots overlap."""
-        ordered = self.sort_by_time(tasks)
-        conflicts = []
-        for i, first in enumerate(ordered):
-            first_end = _to_minutes(first.time) + first.duration_minutes
-            for second in ordered[i + 1:]:
-                if second.pet_name != first.pet_name:
-                    continue
-                if _to_minutes(second.time) < first_end:
-                    conflicts.append((first, second))
-        return conflicts
-
     def mark_task_complete(self, task: Task) -> None:
-        """Mark the given task as completed."""
+        """Mark the task complete and, if it repeats, add its next occurrence to the same pet."""
         task.mark_complete()
+        days = {"daily": 1, "weekly": 7}.get(task.frequency)
+        if days is None:
+            return
+        next_task = Task(
+            task.description,
+            task.pet_name,
+            task.time,
+            task.duration_minutes,
+            task.priority,
+            task.frequency,
+            task.due_date + timedelta(days=days),
+        )
+        for pet in self.owner.pets:
+            if pet.name == task.pet_name:
+                pet.add_task(next_task)
+                break
+
+    def detect_conflicts(self, tasks: list[Task] | None = None) -> list[str]:
+        """Return one warning per start time shared by 2+ tasks (identical 'HH:MM' only, not overlapping durations); never raises."""
+        by_time: dict[str, list[Task]] = {}
+        for task in self._tasks(tasks):
+            by_time.setdefault(task.time, []).append(task)
+
+        warnings: list[str] = []
+        for time, group in by_time.items():
+            if len(group) > 1:
+                names = ", ".join(f"'{t.description}' ({t.pet_name})" for t in group)
+                warnings.append(f"Conflict at {time}: {names}")
+        return warnings

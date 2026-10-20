@@ -34,8 +34,7 @@ Yes. I added a `pet_name` field to `Task` because `Owner.get_all_tasks()` merges
 
 **b. Tradeoffs**
 
-- Describe one tradeoff your scheduler makes.
-- Why is that tradeoff reasonable for this scenario?
+My scheduler only flags tasks that have an identical start time, not tasks whose durations overlap. That is simpler and more predictable, and it is enough for a daily pet routine where most tasks are short. The cost is that a 30-minute walk at 08:00 and a feeding at 08:15 are not flagged.
 
 ---
 
@@ -50,6 +49,8 @@ I used Claude Code as my main AI assistant across the project. In Phase 1 it gen
 I did not accept the first skeleton as it was. After reviewing it, I noticed that Task had no way to record which pet it belonged to, so once Owner.get_all_tasks() merged every pet's tasks into one list, the Scheduler could not tell whose task was whose. I also saw that filter_tasks filtered by species, while the assignment asks for filtering by pet or completion status. I added a pet_name field to Task and changed the filter to use pet name, then updated the UML diagram and my design notes to match.
 
 In Phase 2, Claude Code also left out recurring tasks to keep things simple, and it limited detect_conflicts to overlapping tasks for the same pet, which is narrower than my design (same time, same or different pets). I decided to leave both for Phase 4 instead of accepting them as final. To verify the AI's work, I did not rely on its summaries. I ran python main.py myself and compared the schedule to what I expected, and I ran python -m pytest to confirm the tests passed.
+
+Claude Code also offered three ways to simplify detect_conflicts. I rejected the sort-and-compare version because it could raise an error on a bad time string, which breaks my requirement that conflict detection never crashes. I chose the dictionary grouping because it reads like the problem (bucket by time, report crowded buckets), even though it changes the output to one warning per time slot.
 
 ---
 
