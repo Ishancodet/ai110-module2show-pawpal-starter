@@ -84,10 +84,10 @@ Sample test output:
 
 | Feature | Method(s) | Notes |
 |---------|-----------|-------|
-| Task sorting | | e.g., by priority, duration |
-| Filtering | | e.g., skip tasks if time runs out |
-| Conflict handling | | e.g., overlapping time slots |
-| Recurring tasks | | e.g., daily vs. weekly |
+| Task sorting | `Scheduler.sort_by_time` | Sorts tasks by their `HH:MM` time using `sorted()` with a lambda key that converts the time to minutes since midnight. |
+| Filtering | `Scheduler.filter_tasks` | Filters by `pet_name` and/or `completed` status. Both arguments are optional, so you can combine them or use either alone. |
+| Conflict handling | `Scheduler.detect_conflicts` | Groups tasks by start time in a dict and returns one warning string per time slot with 2+ tasks, across all pets. Flags identical start times only, not overlapping durations, and never raises. |
+| Recurring tasks | `Scheduler.mark_task_complete` | Marks the task complete, then for `daily` or `weekly` frequency creates a new Task due 1 or 7 days later (via `timedelta`) and adds it to the same pet. |
 
 ## 📸 Demo Walkthrough
 
