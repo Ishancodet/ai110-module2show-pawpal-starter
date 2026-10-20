@@ -1,6 +1,7 @@
 classDiagram
     class Task {
         +str description
+        +str pet_name
         +str time
         +int duration_minutes
         +str priority
@@ -28,7 +29,7 @@ classDiagram
     class Scheduler {
         +Owner owner
         +sort_by_time(tasks: list~Task~) list~Task~
-        +filter_tasks(tasks: list~Task~, species: str, priority: str, completed: bool) list~Task~
+        +filter_tasks(tasks: list~Task~, pet_name: str, priority: str, completed: bool) list~Task~
         +detect_conflicts(tasks: list~Task~) list~tuple~
         +mark_task_complete(task: Task) None
     }

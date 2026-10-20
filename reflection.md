@@ -21,8 +21,7 @@
 
 **b. Design changes**
 
-- Did your design change during implementation?
-- If yes, describe at least one change and why you made it.
+Yes. I added a `pet_name` field to `Task` because `Owner.get_all_tasks()` merges the tasks from every pet into a single list, and once they are merged the `Scheduler` has no way to tell which pet a task belongs to. I also changed `Scheduler.filter_tasks()` to filter by pet name instead of species, since the assignment asks for filtering by pet or by completion status, and species was not specific enough to identify one pet.
 
 ---
 
