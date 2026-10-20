@@ -57,6 +57,7 @@ with col_b:
 
 if st.button("Add pet"):
     owner.add_pet(Pet(name=pet_name, species=species))
+    st.success(f"Added pet '{pet_name}' ({species}).")
 
 if owner.pets:
     st.write("Current pets:")
@@ -92,6 +93,7 @@ if st.button("Add task", disabled=task_pet is None):
             due_date=date.today(),
         )
     )
+    st.success(f"Added task '{task_title}' for {pet.name} at {task_time}.")
 
 all_tasks = owner.get_all_tasks()
 if all_tasks:
@@ -114,18 +116,32 @@ else:
 st.divider()
 
 st.subheader("Build Schedule")
-st.caption("This button should call your scheduling logic once you implement it.")
+st.caption("Builds a time-ordered plan for today from all current tasks.")
 
 if st.button("Generate schedule"):
-    st.warning(
-        "Not implemented yet. Next step: create your scheduling logic (classes/functions) and call it here."
-    )
-    st.markdown(
-        """
-Suggested approach:
-1. Design your UML (draft).
-2. Create class stubs (no logic).
-3. Implement scheduling behavior.
-4. Connect your scheduler here and display results.
-"""
-    )
+    scheduler = Scheduler(owner)
+    all_tasks = owner.get_all_tasks()
+    if not all_tasks:
+        st.info("No tasks to schedule. Add a pet and at least one task first.")
+    else:
+        schedule = scheduler.sort_by_time(all_tasks)
+        st.table(
+            [
+                {
+                    "time": t.time,
+                    "pet": t.pet_name,
+                    "task": t.description,
+                    "duration_minutes": t.duration_minutes,
+                    "priority": t.priority,
+                    "status": "done" if t.completed else "pending",
+                }
+                for t in schedule
+            ]
+        )
+        conflicts = scheduler.detect_conflicts(schedule)
+        for message in conflicts:
+            st.warning(message)
+        if conflicts:
+            st.info(f"Schedule built with {len(schedule)} task(s), but {len(conflicts)} time conflict(s) need attention.")
+        else:
+            st.success(f"Schedule built: {len(schedule)} task(s), no time conflicts.")
