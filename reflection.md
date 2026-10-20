@@ -44,6 +44,8 @@ My scheduler only flags tasks that have an identical start time, not tasks whose
 
 I used Claude Code as my main AI assistant across the project. In Phase 1 it generated the Mermaid class diagram from the attributes and methods I had brainstormed, then turned that diagram into a Python skeleton using dataclasses. In Phase 2 it implemented the core logic for Task, Pet, Owner, and Scheduler, wrote the main.py demo script, and drafted my first two pytest tests. The prompts that worked best were specific and narrow, for example "add a pet_name field to Task and change filter_tasks to filter by pet name, and change nothing else." Broad prompts produced more code than I wanted, so I kept each request small and checked the result before moving on. I also used a fresh chat session for each phase, which kept each conversation focused and made it easier to see what changed in each step.
 
+The Claude Code features that helped most were editing several files at once (a change like adding pet_name touched pawpal_system.py, the UML diagram, and my reflection in one step) and running the code itself, so it could run main.py and the tests and show me the result. Starting a fresh /clear session for each phase (design, core logic, UI, algorithms, testing, polish) kept each conversation focused, so the context for one phase did not leak into the next and I could tell what changed in each step.
+
 **b. Judgment and verification**
 
 I did not accept the first skeleton as it was. After reviewing it, I noticed that Task had no way to record which pet it belonged to, so once Owner.get_all_tasks() merged every pet's tasks into one list, the Scheduler could not tell whose task was whose. I also saw that filter_tasks filtered by species, while the assignment asks for filtering by pet or completion status. I added a pet_name field to Task and changed the filter to use pet name, then updated the UML diagram and my design notes to match.
@@ -70,11 +72,11 @@ I am about 4 out of 5 confident. All 19 tests pass, and they cover the main beha
 
 **a. What went well**
 
-- What part of this project are you most satisfied with?
+I am most satisfied with the algorithmic layer. Sorting, filtering, daily and weekly recurrence, and conflict detection all work together through the Scheduler, and I verified them with 19 passing tests and a demo script that shows each behavior in the terminal.
 
 **b. What you would improve**
 
-- If you had another iteration, what would you improve or redesign?
+I would add real overlap detection so a 30-minute walk at 08:00 and a feeding at 08:15 are flagged, since right now only identical start times are caught. I would also validate time strings so a value like '8:00' or '25:99' is rejected with a clear message instead of being silently treated as a different time.
 
 **c. Key takeaway**
 

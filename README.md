@@ -22,6 +22,13 @@ Your final app should:
 - Display the plan clearly (and ideally explain the reasoning)
 - Include tests for the most important scheduling behaviors
 
+## ✨ Features
+
+- **Sorting by time** — `Scheduler.sort_by_time` orders tasks chronologically by their `HH:MM` start time, regardless of the order they were added.
+- **Filtering by pet name and completion status** — `Scheduler.filter_tasks` narrows the task list by `pet_name`, by `completed` status, or both at once.
+- **Daily and weekly recurring tasks** — `Scheduler.mark_task_complete` marks a task done and, if its frequency is `daily` or `weekly`, schedules a new copy 1 or 7 days later for the same pet.
+- **Conflict warnings for identical start times** — `Scheduler.detect_conflicts` returns one warning per start time shared by two or more tasks across all pets. It flags identical `HH:MM` times only, not overlapping durations.
+
 ## Getting started
 
 ### Setup
@@ -103,12 +110,76 @@ Confidence Level: 4/5 stars
 
 ## 📸 Demo Walkthrough
 
-Describe your app in numbered steps so a reader can follow along without watching a video:
+Launch the app with `streamlit run app.py`, then follow these steps:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. **Enter the owner.** Type a name in the "Owner name" field under "Owner & Pets".
+2. **Add a pet.** Enter a pet name, choose a species (dog, cat, or other), and click "Add pet". The pet appears in the "Current pets" list.
+3. **Schedule a task.** Fill in a task title, a time in `HH:MM` format, a duration in minutes, and a priority. Pick the pet from "Assign to pet" and click "Add task". A success message confirms the task was added.
+4. **Add a second task at the same time.** Repeat step 3 using the same `HH:MM` time (for the same pet or a different one) to see conflict detection in action.
+5. **View today's schedule.** Under "Build Schedule", click "Generate schedule". The app shows a table of every task sorted by time, with pet, task, duration, priority, and status columns.
+6. **Read the warnings.** Any tasks sharing an identical start time trigger a warning banner naming the clashing tasks, followed by a summary of how many conflicts need attention. If there are none, a success message confirms a conflict-free plan.
 
-**Screenshot or video** *(optional)*: <!-- Insert a screenshot or link to a demo video here -->
+### Example workflow
+
+- Add a pet: **Mochi** (cat).
+- Schedule a task: **Morning walk** at **08:00**, 20 minutes, priority **high**, assigned to Mochi.
+- Schedule another: **Feeding** at **08:00**, 10 minutes, priority **high**, assigned to Mochi.
+- Click **Generate schedule**: both tasks appear in time order, and a warning reports `Conflict at 08:00: 'Morning walk' (Mochi), 'Feeding' (Mochi)`.
+
+### Key Scheduler behaviors shown
+
+- **Sorting:** tasks added out of order come back in chronological order when the schedule is generated.
+- **Conflict warnings:** tasks with the same start time are grouped into a single warning per time slot, across all pets.
+
+### Command-line demo
+
+`main.py` runs the same logic without the UI and also demonstrates filtering and recurring tasks. Output from running `python main.py`:
+
+```
+PawPal schedule for Ishan (Tuesday, October 20, 2026)
+
+Tasks in the order they were added:
+------------------------------------------------------------
+[ ] 17:30  Grooming               Biscuit   20 min  weekly  due 2026-10-20
+[ ] 08:00  Morning walk           Biscuit   30 min  daily   due 2026-10-20
+[ ] 09:00  Feeding                Biscuit   10 min  daily   due 2026-10-20
+[ ] 19:00  Play with feather toy  Mochi     15 min  daily   due 2026-10-20
+[ ] 07:30  Feeding                Mochi     10 min  daily   due 2026-10-20
+(5 tasks)
+
+Sorted by time:
+------------------------------------------------------------
+[ ] 07:30  Feeding                Mochi     10 min  daily   due 2026-10-20
+[ ] 08:00  Morning walk           Biscuit   30 min  daily   due 2026-10-20
+[ ] 09:00  Feeding                Biscuit   10 min  daily   due 2026-10-20
+[ ] 17:30  Grooming               Biscuit   20 min  weekly  due 2026-10-20
+[ ] 19:00  Play with feather toy  Mochi     15 min  daily   due 2026-10-20
+(5 tasks)
+
+Filtered: Mochi only
+------------------------------------------------------------
+[ ] 19:00  Play with feather toy  Mochi     15 min  daily   due 2026-10-20
+[ ] 07:30  Feeding                Mochi     10 min  daily   due 2026-10-20
+(2 tasks)
+
+Filtered: completed tasks
+------------------------------------------------------------
+[x] 08:00  Morning walk           Biscuit   30 min  daily   due 2026-10-20
+(1 tasks)
+
+Filtered: incomplete tasks
+------------------------------------------------------------
+[ ] 17:30  Grooming               Biscuit   20 min  weekly  due 2026-10-20
+[ ] 09:00  Feeding                Biscuit   10 min  daily   due 2026-10-20
+[ ] 08:00  Morning walk           Biscuit   30 min  daily   due 2026-10-21
+[ ] 19:00  Play with feather toy  Mochi     15 min  daily   due 2026-10-20
+[ ] 07:30  Feeding                Mochi     10 min  daily   due 2026-10-20
+(5 tasks)
+
+After completing the daily 'Morning walk', Biscuit's tasks now include:
+  Morning walk due 2026-10-20 (done)
+  Morning walk due 2026-10-21 (pending)
+
+Conflict check (identical start times only):
+  WARNING: Conflict at 19:00: 'Vet visit' (Biscuit), 'Play with feather toy' (Mochi), 'Brush fur' (Mochi)
+```
