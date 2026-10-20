@@ -80,4 +80,4 @@ I would add real overlap detection so a 30-minute walk at 08:00 and a feeding at
 
 **c. Key takeaway**
 
-- What is one important thing you learned about designing systems or working with AI on this project?
+Working with AI made me the lead architect. Claude Code writes code quickly, but I had to decide the design, notice where its output did not match the spec (Task had no pet_name and filter_tasks used species), choose between its options, and verify everything by running main.py and pytest myself instead of trusting its summaries.
